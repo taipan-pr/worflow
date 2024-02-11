@@ -1,0 +1,20 @@
+// @no-log
+// Reference - https://www.jetbrains.com/help/rider/Http_client_in__product__code_editor.html
+
+POST {{host}}/weatherforecast/demo
+Accept: application/json
+Content-Type: application/json
+
+{
+  "firstName": "Taipan",
+  "lastName": "Prasithpongchai"
+}
+
+> {%
+    client.test("Test status code", () => {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.assert(response.contentType.mimeType === "application/json", "ContentType is not application/json")
+    });
+%}
+
+###
