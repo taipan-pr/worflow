@@ -289,6 +289,9 @@ scripts/deploy/docker-certs/
 # Webpack default README builded file
 *.js.LICENSE.txt
 
-#Xamarin ignore files
+# Xamarin ignore files
 FodyWeavers.xsd
 .github/act/
+
+# local appsettings
+appsettings.Local.json
