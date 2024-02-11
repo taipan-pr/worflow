@@ -1,7 +1,7 @@
 // @no-log
 // Reference - https://www.jetbrains.com/help/rider/Http_client_in__product__code_editor.html
 
-GET {{host}}/weatherforecast
+GET {{host}}/v1/weatherforecast
 Accept: application/json
 
 > {%
