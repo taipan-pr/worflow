@@ -3,9 +3,11 @@ using Asp.Versioning;
 using Carter;
 using FluentValidation;
 using FluentValidation.Results;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Workflow.Api.Extensions;
 using Workflow.Api.Response;
+using Workflow.Application.Queries.GetWeatherForecastQuery;
 
 namespace Workflow.Api.Endpoints;
 
@@ -60,37 +62,13 @@ public class WeatherForecastEndpoints : ICarterModule
         return TypedResults.Ok(id);
     }
 
-    private static WeatherForecast[] WeatherForecasts()
+    private static async Task<IEnumerable<GetWeatherForecastResponse>> WeatherForecasts(
+        [FromServices] IMediator mediator,
+        CancellationToken cancellationToken)
     {
-        var summaries = new[]
-        {
-            "Freezing",
-            "Bracing",
-            "Chilly",
-            "Cool",
-            "Mild",
-            "Warm",
-            "Balmy",
-            "Hot",
-            "Sweltering",
-            "Scorching"
-        };
-
-        var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                (
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    summaries[Random.Shared.Next(summaries.Length)]
-                ))
-            .ToArray();
-        return forecast;
+        var result = await mediator.Send(new GetWeatherForecastRequest(), cancellationToken);
+        return result;
     }
-}
-
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }
 
 internal record Person(string FirstName, string LastName);

@@ -1,5 +1,8 @@
 using System.Reflection;
 using Autofac;
+using MediatR.Extensions.Autofac.DependencyInjection;
+using MediatR.Extensions.Autofac.DependencyInjection.Builder;
+using Workflow.Application.PipelineBehaviors;
 using Module = Autofac.Module;
 
 namespace Workflow.Application;
@@ -10,5 +13,16 @@ public class AutofacModule : Module
     {
         var assembly = Assembly.GetExecutingAssembly();
         builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces();
+
+        var configuration = MediatRConfigurationBuilder
+            .Create(assembly)
+            .WithAllOpenGenericHandlerTypesRegistered()
+            .WithRegistrationScope(RegistrationScope.Scoped)
+            .WithCustomPipelineBehaviors(new[]
+            {
+                typeof(ValidationBehavior<,>)
+            })
+            .Build();
+        builder.RegisterMediatR(configuration);
     }
 }

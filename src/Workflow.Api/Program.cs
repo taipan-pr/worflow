@@ -12,7 +12,15 @@ var builder = WebApplication.CreateBuilder(args);
 // Replace default container with Autofac container
 builder.Host
     .UseServiceProviderFactory(new AutofacServiceProviderFactory())
-    .ConfigureContainer<ContainerBuilder>(e => e.RegisterModule<AutofacModule>());
+    .ConfigureContainer<ContainerBuilder>(e => e.RegisterModule<AutofacModule>())
+    .ConfigureAppConfiguration((context, config) =>
+    {
+        var environment = context.HostingEnvironment.EnvironmentName;
+        config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+        config.AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true);
+        config.AddEnvironmentVariables();
+        config.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true);
+    });
 
 // Add services to the container.
 builder.Services.AddHttpContextAccessor();
