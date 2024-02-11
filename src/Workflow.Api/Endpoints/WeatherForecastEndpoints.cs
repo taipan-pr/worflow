@@ -1,4 +1,5 @@
 using System.Net;
+using Asp.Versioning;
 using Carter;
 using FluentValidation;
 using FluentValidation.Results;
@@ -12,13 +13,33 @@ public class WeatherForecastEndpoints : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/weatherforecast")
+        var apiVersionSet = app.NewApiVersionSet()
+            .HasApiVersion(new ApiVersion(1))
+            .HasApiVersion(new ApiVersion(2))
+            .ReportApiVersions()
+            .Build();
+
+        var groupV1 = app.MapGroup("/v{version:apiVersion}/weatherforecast")
             .WithTags("WeatherForecast")
-            .WithOpenApi();
+            .WithOpenApi()
+            .WithApiVersionSet(apiVersionSet)
+            .MapToApiVersion(1);
 
-        group.MapGet("/", WeatherForecasts);
+        var groupV2 = app.MapGroup("/v{version:apiVersion}/weatherforecast")
+            .WithTags("WeatherForecast")
+            .WithOpenApi()
+            .WithApiVersionSet(apiVersionSet)
+            .MapToApiVersion(2);
 
-        group.MapPost("/demo", DemoHandler)
+        groupV1.MapGet("/", WeatherForecasts);
+
+        groupV1.MapPost("/demo", DemoHandler)
+            .WithSummary("Hello Summary")
+            .WithDescription("Hello description")
+            .Produces<Person>(statusCode: (int)HttpStatusCode.OK)
+            .Produces<ErrorResponse>(statusCode: (int)HttpStatusCode.BadRequest);
+
+        groupV2.MapPost("/demo", DemoHandler)
             .WithSummary("Hello Summary")
             .WithDescription("Hello description")
             .Produces<Person>(statusCode: (int)HttpStatusCode.OK)
@@ -65,11 +86,11 @@ public class WeatherForecastEndpoints : ICarterModule
             .ToArray();
         return forecast;
     }
+}
 
-    private record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-    {
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-    }
+internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+{
+    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }
 
 internal record Person(string FirstName, string LastName);

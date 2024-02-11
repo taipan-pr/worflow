@@ -1,7 +1,9 @@
+using Asp.Versioning;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Carter;
 using Workflow.Api;
+using Workflow.Api.Swagger;
 using Workflow.Application.Extensions;
 using Workflow.Infrastructure.Extensions;
 
@@ -15,9 +17,26 @@ builder.Host
 // Add services to the container.
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    // Add a custom operation filter which sets default values
+    options.OperationFilter<SwaggerDefaultValues>();
+});
 builder.Services.AddInfrastructure();
 builder.Services.AddApplication();
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(1);
+    options.ReportApiVersions = true;
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ApiVersionReader = ApiVersionReader.Combine(
+        new UrlSegmentApiVersionReader(),
+        new HeaderApiVersionReader("X-Api-Version"));
+}).AddApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
+});
 
 // By default ValidatorLifetime is Singleton and will append error message of one request after another
 builder.Services.AddCarter(configurator: config => config.WithValidatorLifetime(ServiceLifetime.Scoped));
@@ -28,7 +47,18 @@ app.MapCarter();
 if(app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        var descriptions = app.DescribeApiVersions();
+
+        // Build a swagger endpoint for each discovered API version
+        foreach (var description in descriptions)
+        {
+            var url = $"/swagger/{description.GroupName}/swagger.json";
+            var name = description.GroupName.ToUpperInvariant();
+            options.SwaggerEndpoint(url, name);
+        }
+    });
 }
 
 app.UseHttpsRedirection();
