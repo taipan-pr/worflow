@@ -1,9 +1,12 @@
 using MediatR;
+using Serilog;
 
 namespace Workflow.Application.Queries.GetWeatherForecastQuery;
 
-public class GetWeatherForecastQuery : IRequestHandler<GetWeatherForecastRequest, IEnumerable<GetWeatherForecastResponse>>
+public class GetWeatherForecastHandler : IRequestHandler<GetWeatherForecastRequest, IEnumerable<GetWeatherForecastResponse>>
 {
+    private readonly ILogger _logger;
+
     private readonly List<string> _summaries =
     [
         "Freezing",
@@ -18,8 +21,14 @@ public class GetWeatherForecastQuery : IRequestHandler<GetWeatherForecastRequest
         "Scorching"
     ];
 
+    public GetWeatherForecastHandler(ILogger logger)
+    {
+        _logger = logger;
+    }
+
     public async Task<IEnumerable<GetWeatherForecastResponse>> Handle(GetWeatherForecastRequest request, CancellationToken cancellationToken)
     {
+        _logger.Information("Hello from {Handler}", nameof(GetWeatherForecastHandler));
         var forecast = Enumerable.Range(1, 5).Select(index =>
             new GetWeatherForecastResponse
             {

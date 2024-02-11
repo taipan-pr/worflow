@@ -296,3 +296,6 @@ FodyWeavers.xsd
 # local appsettings
 appsettings.Local.json
 http-client.private.env.json
+
+# log files
+/logs
