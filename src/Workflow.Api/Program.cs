@@ -2,9 +2,13 @@ using Asp.Versioning;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Carter;
+using Microsoft.Extensions.Options;
+using Serilog;
+using Serilog.Exceptions;
 using Workflow.Api;
 using Workflow.Api.Swagger;
 using Workflow.Application.Extensions;
+using Workflow.Application.Options;
 using Workflow.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +24,29 @@ builder.Host
         config.AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true);
         config.AddEnvironmentVariables();
         config.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true);
+    })
+    .UseSerilog((context, services, config) =>
+    {
+        var seqOptions = services.GetRequiredService<IOptions<SeqOptions>>();
+        if(!string.IsNullOrEmpty(seqOptions.Value.Host) && !string.IsNullOrEmpty(seqOptions.Value.ApiKey))
+        {
+            config.WriteTo.Seq(seqOptions.Value.Host, apiKey: seqOptions.Value.ApiKey);
+        }
+
+        config
+#if DEBUG
+            .Enrich.WithProperty("Environment", "Local")
+#else
+            .Enrich.WithProperty("Environment", context.Configuration["ASPNETCORE_ENVIRONMENT"])
+#endif
+            .Enrich.FromLogContext()
+            .Enrich.WithEnvironmentUserName()
+            .Enrich.WithMachineName()
+            .Enrich.WithClientIp()
+            .Enrich.WithCorrelationId(addValueIfHeaderAbsence: true)
+            .Enrich.WithExceptionDetails()
+            .ReadFrom.Configuration(context.Configuration)
+            .ReadFrom.Services(services);
     });
 
 // Add services to the container.
