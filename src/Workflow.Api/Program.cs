@@ -1,9 +1,22 @@
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using Workflow.Api;
+using Workflow.Application.Extensions;
+using Workflow.Infrastructure.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Replace default container with Autofac container
+builder.Host
+    .UseServiceProviderFactory(new AutofacServiceProviderFactory())
+    .ConfigureContainer<ContainerBuilder>(e => e.RegisterModule<AutofacModule>());
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddInfrastructure();
+builder.Services.AddApplication();
 
 var app = builder.Build();
 
@@ -47,7 +60,10 @@ app.MapGet("/weatherforecast", () =>
 
 app.Run();
 
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+namespace Workflow.Api
 {
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+    {
+        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    }
 }
