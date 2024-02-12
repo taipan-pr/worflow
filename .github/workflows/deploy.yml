@@ -1,0 +1,30 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        required: true
+        default: 'development'
+        type: choice
+        options:
+          - development
+          - staging
+          - production
+      tag:
+        required: false
+        type: string
+        default: latest
+
+permissions:
+  contents: read
+
+jobs:
+  update-tag:
+    permissions: write-all
+    uses: ./.github/workflows/update-tag.yml
+    with:
+      image: ghcr.io/${{ github.repository }}
+      image_tag: ${{ inputs.tag }}
+      tag: stage-${{ inputs.environment }}
+    secrets: inherit
