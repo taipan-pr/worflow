@@ -56,7 +56,7 @@ public class WeatherForecastEndpoints : ICarterModule
         var result = hca.Validate(id);
         if(!result.IsValid)
         {
-            return TypedResults.BadRequest(result.ToErrorResponse());
+            throw new ValidationException("Validation Failed", result.Errors);
         }
 
         return TypedResults.Ok(id);
