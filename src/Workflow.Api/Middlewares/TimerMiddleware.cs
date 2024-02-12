@@ -22,13 +22,22 @@ public class TimerMiddleware
         switch (context.Response.StatusCode)
         {
             case >= 200 and < 300:
-                _logger.Information("Status: {Status}, Finished Request: {Path}, Elapsed: {Elapsed}", context.Response.StatusCode, context.Request.Path, stopwatch.Elapsed);
+                _logger.Information("Status: {Status}, Finished Request: {Path}, Elapsed: {Elapsed}",
+                    context.Response.StatusCode,
+                    context.Request.Path,
+                    stopwatch.Elapsed);
                 break;
             case >= 400 and < 500:
-                _logger.Warning("Status: {Status}, Finished Request: {Path}, Elapsed: {Elapsed}", context.Response.StatusCode, context.Request.Path, stopwatch.Elapsed);
+                _logger.Warning("Status: {Status}, Finished Request: {Path}, Elapsed: {Elapsed}",
+                    context.Response.StatusCode,
+                    context.Request.Path,
+                    stopwatch.Elapsed);
                 break;
             case >= 500:
-                _logger.Error("Status: {Status}, Finished Request: {Path}, Elapsed: {Elapsed}", context.Response.StatusCode, context.Request.Path, stopwatch.Elapsed);
+                _logger.Error("Status: {Status}, Finished Request: {Path}, Elapsed: {Elapsed}",
+                    context.Response.StatusCode,
+                    context.Request.Path,
+                    stopwatch.Elapsed);
                 break;
         }
     }

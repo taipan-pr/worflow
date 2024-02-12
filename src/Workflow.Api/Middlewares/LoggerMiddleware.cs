@@ -26,10 +26,21 @@ public class LoggerMiddleware
         response.Seek(0, SeekOrigin.Begin);
         await response.CopyToAsync(originalBody);
 
-        _logger
+        var logger = _logger
             .ForContext("Request", requestJson, true)
-            .ForContext("Response", responseJson, true)
-            .Information("Request & Response Logger");
+            .ForContext("Response", responseJson, true);
+        switch (context.Response.StatusCode)
+        {
+            case >= 200 and < 300:
+                logger.Information("Request & Response Logger");
+                break;
+            case >= 400 and < 500:
+                logger.Warning("Request & Response Logger");
+                break;
+            case >= 500:
+                logger.Error("Request & Response Logger");
+                break;
+        }
     }
 
     private static async Task<string> GetRequestBodyAsync(HttpContext context, Stream stream)
