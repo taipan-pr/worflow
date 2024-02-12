@@ -1,0 +1,52 @@
+version: '3.9'
+
+services:
+  seq:
+    image: datalust/seq:latest
+    container_name: workflow-seq
+    restart: unless-stopped
+    environment:
+      ACCEPT_EULA: Y
+    ports:
+      - "8801:80"
+      - "5341:5341"
+    volumes:
+      - ./.docker-data/seq:/data
+
+  postgres-db:
+    image: postgres
+    container_name: workflow-postgres-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mediatr
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./.docker-data/postgres:/var/lib/postgresql/data
+
+  postgres-ui:
+    depends_on:
+     - postgres-db
+    image: adminer
+    container_name: workflow-postgres-ui
+    restart: unless-stopped
+    ports:
+      - "8802:8080"
+
+  redis:
+    image: redis
+    container_name: workflow-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+  redisinsight:
+    image: redislabs/redisinsight:latest
+    container_name: workflow-redisinsight
+    restart: unless-stopped
+    volumes:
+      - ./.docker-data/redisinsight:/db
+    ports:
+      - "8803:8001"

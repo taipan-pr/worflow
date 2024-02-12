@@ -299,3 +299,6 @@ http-client.private.env.json
 
 # log files
 /logs
+
+# docker
+.docker-data/
