@@ -1,7 +1,7 @@
 using Asp.Versioning;
 using Carter;
 
-namespace Workflow.Api.Endpoints;
+namespace Workflow.Api.Endpoints.DemoEndpoints;
 
 public class DemoEndpoints : ICarterModule
 {

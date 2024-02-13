@@ -1,5 +1,6 @@
 using System.Reflection;
 using Autofac;
+using AutoMapper.Contrib.Autofac.DependencyInjection;
 using MediatR.Extensions.Autofac.DependencyInjection;
 using MediatR.Extensions.Autofac.DependencyInjection.Builder;
 using Workflow.Application.PipelineBehaviors;
@@ -13,6 +14,8 @@ public class AutofacModule : Module
     {
         var assembly = Assembly.GetExecutingAssembly();
         builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces();
+
+        builder.RegisterAutoMapper(assembly);
 
         var configuration = MediatRConfigurationBuilder
             .Create(assembly)

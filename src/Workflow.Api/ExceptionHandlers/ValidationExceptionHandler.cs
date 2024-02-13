@@ -5,7 +5,7 @@ using Workflow.Api.Response;
 
 namespace Workflow.Api.ExceptionHandlers;
 
-public class ValidationExceptionHandler : IExceptionHandler
+internal class ValidationExceptionHandler : IExceptionHandler
 {
     private readonly ILogger _logger;
 
