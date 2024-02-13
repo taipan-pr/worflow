@@ -2,7 +2,7 @@
 
 namespace Workflow.Api.Middlewares;
 
-public class LoggerMiddleware
+internal class LoggerMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly ILogger _logger;

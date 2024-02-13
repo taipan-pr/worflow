@@ -1,6 +1,6 @@
 namespace Workflow.Api.Extensions;
 
-public static class ApplicationBuilder
+internal static class ApplicationBuilder
 {
     public static WebApplication UseSwaggerInterface(this WebApplication app)
     {

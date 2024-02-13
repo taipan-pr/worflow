@@ -2,7 +2,7 @@
 
 namespace Workflow.Api.Middlewares;
 
-public class TimerMiddleware
+internal class TimerMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly ILogger _logger;

@@ -3,7 +3,7 @@ using Serilog;
 
 namespace Workflow.Application.Queries.GetWeatherForecastQuery;
 
-public class GetWeatherForecastHandler : IRequestHandler<GetWeatherForecastRequest, IEnumerable<GetWeatherForecastResponse>>
+internal class GetWeatherForecastHandler : IRequestHandler<GetWeatherForecastRequest, IEnumerable<GetWeatherForecastResponse>>
 {
     private readonly ILogger _logger;
 

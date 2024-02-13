@@ -1,13 +1,33 @@
-using Carter.ModelBinding;
+using FluentValidation;
 using FluentValidation.Results;
 
 namespace Workflow.Api.Extensions;
 
 internal static class HttpContextAccessorExtensions
 {
-    public static ValidationResult Validate<T>(this IHttpContextAccessor contextAccessor, T model)
+    public static async Task<ValidationResult> ValidateAsync<T>(this IHttpContextAccessor contextAccessor, T model, CancellationToken cancellationToken = default)
     {
-        var result = contextAccessor.HttpContext!.Request.Validate(model);
-        return result;
+        var validators = contextAccessor.HttpContext?.RequestServices.GetService<IList<IValidator<T>>>();
+        if(validators is null || validators.Count == 0)
+        {
+            return new ValidationResult();
+        }
+
+        var failures = new List<ValidationFailure>();
+
+        foreach (var validator in validators)
+        {
+            var results = await validator.ValidateAsync(model, cancellationToken);
+            if(results.Errors.Count == 0) continue;
+
+            failures.AddRange(results.Errors);
+        }
+
+        if(failures.Count != 0)
+        {
+            throw new ValidationException("Request validation failed", failures);
+        }
+
+        return new ValidationResult();
     }
 }

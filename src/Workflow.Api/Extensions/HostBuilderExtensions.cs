@@ -7,7 +7,7 @@ using Workflow.Application.Options;
 
 namespace Workflow.Api.Extensions;
 
-public static class HostBuilderExtensions
+internal static class HostBuilderExtensions
 {
     public static IHostBuilder AddAutofac(this IHostBuilder host)
     {

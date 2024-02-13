@@ -4,7 +4,7 @@ using Workflow.Api.Response;
 
 namespace Workflow.Api.ExceptionHandlers;
 
-public class UnhandledExceptionHandler : IExceptionHandler
+internal class UnhandledExceptionHandler : IExceptionHandler
 {
     private readonly ILogger _logger;
 

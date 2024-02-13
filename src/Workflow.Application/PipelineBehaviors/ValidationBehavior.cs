@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Workflow.Application.PipelineBehaviors;
 
-public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+internal class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
 {
     private readonly IEnumerable<IValidator<TRequest>> _validators;
@@ -27,7 +27,7 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
 
         if(failures.Count != 0)
         {
-            throw new ValidationException(failures);
+            throw new ValidationException("Handler validation failed", failures);
         }
 
         return await next();
