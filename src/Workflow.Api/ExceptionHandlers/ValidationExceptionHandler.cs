@@ -1,7 +1,7 @@
 using System.Net;
-using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
-using Workflow.Api.Response;
+using Workflow.Application.Exceptions;
+using Workflow.Domain.RequestResponse;
 
 namespace Workflow.Api.ExceptionHandlers;
 
@@ -16,13 +16,15 @@ internal class ValidationExceptionHandler : IExceptionHandler
 
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
-        if(exception is not ValidationException ex)
+        if(exception is not ValidationFailedException ex)
         {
             return false;
         }
 
         _logger
-            .ForContext("Message", ex.Errors.Select(e => e.ErrorMessage), true)
+            .ForContext("Code", ex.ErrorCode, true)
+            .ForContext("Message", ex.Message, true)
+            .ForContext("Failures", ex.Errors, true)
             .ForContext("Exception", exception)
             .Warning(exception.Message);
 
@@ -30,8 +32,9 @@ internal class ValidationExceptionHandler : IExceptionHandler
         httpContext.Response.ContentType = "application/json";
         await httpContext.Response.WriteAsJsonAsync(new ErrorResponse
         {
+            ErrorCode = ex.ErrorCode,
             Message = ex.Message,
-            Errors = ex.Errors.Select(e => e.ErrorMessage)
+            Errors = ex.Errors
         }, cancellationToken: cancellationToken);
 
         return true;

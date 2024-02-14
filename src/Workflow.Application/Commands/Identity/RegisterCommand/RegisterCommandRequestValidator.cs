@@ -1,7 +1,7 @@
 using FluentValidation;
 using FluentValidation.Results;
 
-namespace Workflow.Application.Commands.RegisterCommand;
+namespace Workflow.Application.Commands.Identity.RegisterCommand;
 
 internal class RegisterCommandRequestValidator : AbstractValidator<RegisterCommandRequest>
 {

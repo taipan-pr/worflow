@@ -1,5 +1,6 @@
 using AutoMapper;
 using FirebaseAdmin.Auth;
+using Workflow.Application.Exceptions;
 using Workflow.Application.Interfaces;
 using Workflow.Domain.DataTransferObjects.Identity;
 
@@ -18,21 +19,41 @@ internal class FirebaseIdentityProvider : IIdentityProvider
 
     public async Task<Identity> RegisterAsync(CreateIdentity identity, CancellationToken cancellationToken = default)
     {
-        var args = new UserRecordArgs
-        {
-            Email = identity.Email,
-            Password = identity.Password
-        };
+        Identity? result = null;
 
-        var user = await _firebase.CreateUserAsync(args, cancellationToken);
-        var result = _mapper.Map<Identity>(user);
-        return result;
+        try
+        {
+            var args = new UserRecordArgs
+            {
+                Email = identity.Email,
+                Password = identity.Password
+            };
+
+            var user = await _firebase.CreateUserAsync(args, cancellationToken);
+            result = _mapper.Map<Identity>(user);
+        }
+        catch (FirebaseAuthException e)
+        {
+            ThrowCustomException(e);
+        }
+
+        return result!;
     }
 
-    public async Task<Identity> FindByIdAsync(string id, CancellationToken cancellationToken = default)
+    public async Task<Identity?> FindByIdAsync(string id, CancellationToken cancellationToken = default)
     {
-        var user = await _firebase.GetUserAsync(id, cancellationToken);
-        var result = _mapper.Map<Identity>(user);
+        Identity? result = null;
+        try
+        {
+            var user = await _firebase.GetUserAsync(id, cancellationToken);
+            result = _mapper.Map<Identity>(user);
+            return result;
+        }
+        catch (FirebaseAuthException e)
+        {
+            ThrowCustomException(e);
+        }
+
         return result;
     }
 
@@ -60,5 +81,50 @@ internal class FirebaseIdentityProvider : IIdentityProvider
         var user = await _firebase.UpdateUserAsync(args, cancellationToken);
         var result = _mapper.Map<Identity>(user);
         return result;
+    }
+
+    private static void ThrowCustomException(FirebaseAuthException ex)
+    {
+        switch (ex.AuthErrorCode)
+        {
+            case AuthErrorCode.CertificateFetchFailed:
+                break;
+            case AuthErrorCode.EmailAlreadyExists:
+                throw new UserExistsException();
+            case AuthErrorCode.ExpiredIdToken:
+                break;
+            case AuthErrorCode.InvalidIdToken:
+                break;
+            case AuthErrorCode.PhoneNumberAlreadyExists:
+                break;
+            case AuthErrorCode.UidAlreadyExists:
+                break;
+            case AuthErrorCode.UnexpectedResponse:
+                break;
+            case AuthErrorCode.InvalidDynamicLinkDomain:
+                break;
+            case AuthErrorCode.RevokedIdToken:
+                break;
+            case AuthErrorCode.InvalidSessionCookie:
+                break;
+            case AuthErrorCode.ExpiredSessionCookie:
+                break;
+            case AuthErrorCode.RevokedSessionCookie:
+                break;
+            case AuthErrorCode.ConfigurationNotFound:
+                break;
+            case AuthErrorCode.TenantNotFound:
+                break;
+            case AuthErrorCode.TenantIdMismatch:
+                break;
+            case AuthErrorCode.EmailNotFound:
+                break;
+
+            // Do nothing about these exceptions
+            case AuthErrorCode.UserNotFound:
+            case null:
+            default:
+                break;
+        }
     }
 }

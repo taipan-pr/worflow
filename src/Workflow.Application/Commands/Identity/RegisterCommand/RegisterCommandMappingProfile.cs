@@ -2,7 +2,7 @@ using AutoMapper;
 using Workflow.Domain.DataTransferObjects.Identity;
 using Workflow.Domain.RequestResponse.Identity;
 
-namespace Workflow.Application.Commands.RegisterCommand;
+namespace Workflow.Application.Commands.Identity.RegisterCommand;
 
 internal class RegisterCommandMappingProfile : Profile
 {
@@ -10,7 +10,7 @@ internal class RegisterCommandMappingProfile : Profile
     {
         CreateMap<RegisterRequest, RegisterCommandRequest>();
         CreateMap<RegisterCommandRequest, CreateIdentity>();
-        CreateMap<Identity, RegisterCommandResponse>();
+        CreateMap<Domain.DataTransferObjects.Identity.Identity, RegisterCommandResponse>();
         CreateMap<RegisterCommandResponse, RegisterResponse>();
     }
 }

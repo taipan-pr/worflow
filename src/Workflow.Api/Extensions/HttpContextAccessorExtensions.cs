@@ -1,5 +1,6 @@
 using FluentValidation;
 using FluentValidation.Results;
+using Workflow.Application.Exceptions;
 
 namespace Workflow.Api.Extensions;
 
@@ -25,7 +26,7 @@ internal static class HttpContextAccessorExtensions
 
         if(failures.Count != 0)
         {
-            throw new ValidationException("Request validation failed", failures);
+            throw new ValidationFailedException(failures);
         }
 
         return new ValidationResult();
