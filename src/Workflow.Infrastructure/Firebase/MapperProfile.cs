@@ -8,7 +8,7 @@ internal class MapperProfile : Profile
 {
     public MapperProfile()
     {
-        CreateMap<UserRecord, CreateIdentityResult>()
+        CreateMap<UserRecord, Identity>()
             .AfterMap((src, dest) =>
             {
                 dest.Id = src.Uid;

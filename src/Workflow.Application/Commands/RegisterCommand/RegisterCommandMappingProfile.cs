@@ -10,7 +10,7 @@ internal class RegisterCommandMappingProfile : Profile
     {
         CreateMap<RegisterRequest, RegisterCommandRequest>();
         CreateMap<RegisterCommandRequest, CreateIdentity>();
-        CreateMap<CreateIdentityResult, RegisterCommandResponse>();
+        CreateMap<Identity, RegisterCommandResponse>();
         CreateMap<RegisterCommandResponse, RegisterResponse>();
     }
 }
