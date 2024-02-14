@@ -24,6 +24,7 @@ builder.Services
 
 // Setup global exception handler
 builder.Services.AddExceptionHandler<ValidationExceptionHandler>();
+builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 builder.Services.AddExceptionHandler<UnhandledExceptionHandler>();
 
 var app = builder.Build();

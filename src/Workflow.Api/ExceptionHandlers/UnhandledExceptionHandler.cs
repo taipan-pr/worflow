@@ -1,6 +1,6 @@
 using System.Net;
 using Microsoft.AspNetCore.Diagnostics;
-using Workflow.Api.Response;
+using Workflow.Domain.RequestResponse;
 
 namespace Workflow.Api.ExceptionHandlers;
 
@@ -21,7 +21,8 @@ internal class UnhandledExceptionHandler : IExceptionHandler
         httpContext.Response.ContentType = "application/json";
         await httpContext.Response.WriteAsJsonAsync(new ErrorResponse
         {
-            Message = "Something went wrong"
+            ErrorCode = "UNHANDLED",
+            Message = "Something went wrong on our side"
         }, cancellationToken: cancellationToken);
 
         return true;

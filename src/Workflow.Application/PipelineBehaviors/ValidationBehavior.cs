@@ -1,6 +1,7 @@
 using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
+using Workflow.Application.Exceptions;
 
 namespace Workflow.Application.PipelineBehaviors;
 
@@ -27,7 +28,7 @@ internal class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequ
 
         if(failures.Count != 0)
         {
-            throw new ValidationException("Handler validation failed", failures);
+            throw new ValidationFailedException(failures);
         }
 
         return await next();

@@ -4,8 +4,9 @@ using AutoMapper;
 using Carter;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Workflow.Api.Response;
-using Workflow.Application.Commands.RegisterCommand;
+using Workflow.Application.Commands.Identity.RegisterCommand;
+using Workflow.Application.Queries.Identity.GetIdentityByIdQuery;
+using Workflow.Domain.RequestResponse;
 using Workflow.Domain.RequestResponse.Identity;
 
 namespace Workflow.Api.Endpoints.IdentityEndpoints;
@@ -33,9 +34,30 @@ public class IdentityEndpoints : ICarterModule
             .WithDescription("Register user with username and password")
             .Produces<RegisterResponse>(statusCode: (int)HttpStatusCode.OK)
             .Produces<ErrorResponse>(statusCode: (int)HttpStatusCode.BadRequest);
+
+        v1.MapGet("/{id}", FindByIdAsync)
+            .WithSummary("Find user by ID")
+            .WithDescription("Find user with the ID")
+            .Produces<IdentityResponse>(statusCode: (int)HttpStatusCode.OK)
+            .Produces<ErrorResponse>(statusCode: (int)HttpStatusCode.BadRequest);
     }
 
-    private async Task<IResult> RegisterAsync(
+    private static async Task<IResult> FindByIdAsync(
+        [FromRoute] string id,
+        [FromServices] ISender mediator,
+        [FromServices] IMapper mapper,
+        CancellationToken cancellationToken)
+    {
+        var request = new GetIdentityByIdQueryRequest
+        {
+            Id = id
+        };
+        var response = await mediator.Send(request, cancellationToken);
+        var mapResponse = mapper.Map<IdentityResponse>(response);
+        return response is null ? TypedResults.NotFound() : TypedResults.Ok(mapResponse);
+    }
+
+    private static async Task<IResult> RegisterAsync(
         [FromBody] RegisterRequest request,
         [FromServices] IHttpContextAccessor hca,
         [FromServices] ISender mediator,

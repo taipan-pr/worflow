@@ -11,5 +11,31 @@ Content-Type: application/json
     client.test("Test status code", () => {
         client.assert(response.status === 200, "Response status is not 200");
         client.assert(response.contentType.mimeType === "application/json", "ContentType is not application/json")
+        client.global.set("newId", response.body.id);
+    });
+%}
+
+###
+
+GET {{host}}/v1/identity/{{newId}}
+Accept: application/json
+Content-Type: application/json
+
+> {%
+    client.test("Test status code", () => {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.assert(response.contentType.mimeType === "application/json", "ContentType is not application/json")
+    });
+%}
+
+###
+
+GET {{host}}/v1/identity/xxx
+Accept: application/json
+Content-Type: application/json
+
+> {%
+    client.test("Test status code", () => {
+        client.assert(response.status === 404, "Response status is not 404");
     });
 %}

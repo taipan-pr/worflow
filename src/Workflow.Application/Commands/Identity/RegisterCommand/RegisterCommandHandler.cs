@@ -3,7 +3,7 @@ using MediatR;
 using Workflow.Application.Interfaces;
 using Workflow.Domain.DataTransferObjects.Identity;
 
-namespace Workflow.Application.Commands.RegisterCommand;
+namespace Workflow.Application.Commands.Identity.RegisterCommand;
 
 internal class RegisterCommandHandler : IRequestHandler<RegisterCommandRequest, RegisterCommandResponse>
 {
