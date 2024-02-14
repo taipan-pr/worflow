@@ -1,6 +1,5 @@
 using Carter;
 using Workflow.Api.ExceptionHandlers;
-using Workflow.Api.Extensions;
 using Workflow.Api.Middlewares;
 using Workflow.Application.Extensions;
 using Workflow.Infrastructure.Extensions;
@@ -39,7 +38,9 @@ app.UseMiddleware<TimerMiddleware>();
 
 app.UseMiddleware<LoggerMiddleware>();
 
+#if !DEBUG
 app.UseExceptionHandler(_ => { });
+#endif
 
 app.UseHttpsRedirection();
 

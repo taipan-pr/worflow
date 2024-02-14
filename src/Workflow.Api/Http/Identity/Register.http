@@ -1,0 +1,15 @@
+POST {{host}}/v1/identity/register
+Accept: application/json
+Content-Type: application/json
+
+{
+  "email": "taipan+99@prasithpongchai.com",
+  "password": "gkt8rqd3naz!jhv.BFT"
+}
+
+> {%
+    client.test("Test status code", () => {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.assert(response.contentType.mimeType === "application/json", "ContentType is not application/json")
+    });
+%}

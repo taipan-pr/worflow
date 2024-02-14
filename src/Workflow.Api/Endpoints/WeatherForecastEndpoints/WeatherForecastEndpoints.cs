@@ -4,11 +4,10 @@ using AutoMapper;
 using Carter;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Workflow.Api.Extensions;
 using Workflow.Api.Response;
 using Workflow.Application.Commands.CreateDemo;
 using Workflow.Application.Queries.GetWeatherForecastQuery;
-using Workflow.Domain.DataTransferObjects;
+using Workflow.Domain.RequestResponse.WeatherForecast;
 
 namespace Workflow.Api.Endpoints.WeatherForecastEndpoints;
 

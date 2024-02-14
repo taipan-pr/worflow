@@ -10,4 +10,8 @@
       <ProjectReference Include="..\Workflow.Application\Workflow.Application.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="FirebaseAdmin" Version="2.4.0" />
+    </ItemGroup>
+
 </Project>

@@ -1,4 +1,4 @@
-namespace Workflow.Domain.DataTransferObjects;
+namespace Workflow.Domain.RequestResponse.WeatherForecast;
 
 public record DemoRequest
 {
