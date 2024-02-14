@@ -18,7 +18,6 @@ internal class RegisterCommandHandler : IRequestHandler<RegisterCommandRequest, 
 
     public async Task<RegisterCommandResponse> Handle(RegisterCommandRequest request, CancellationToken cancellationToken)
     {
-        throw new ArgumentException("Random");
         var model = _mapper.Map<CreateIdentity>(request);
         var registerResult = await _identity.RegisterAsync(model, cancellationToken);
         var response = _mapper.Map<RegisterCommandResponse>(registerResult);

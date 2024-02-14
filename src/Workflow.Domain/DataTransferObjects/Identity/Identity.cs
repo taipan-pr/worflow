@@ -1,6 +1,6 @@
 namespace Workflow.Domain.DataTransferObjects.Identity;
 
-public record CreateIdentityResult
+public record Identity
 {
     public string Id { get; set; }
     public string Email { get; set; }
