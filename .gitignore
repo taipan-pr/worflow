@@ -302,3 +302,6 @@ http-client.private.env.json
 
 # docker
 .docker-data/
+
+// firebase auth token
+workflow-firebase-adminsdk.json

@@ -1,6 +1,7 @@
 using System.Reflection;
 using Autofac;
 using Carter;
+using Microsoft.AspNetCore.Diagnostics;
 using Module = Autofac.Module;
 
 namespace Workflow.Api;
@@ -14,7 +15,8 @@ internal class AutofacModule : Module
             .Where(e =>
             {
                 // Since Carter will register all of its dependencies (ICarterModule) from AddCarter() we don't need to add that in via Autofac
-                var isAllowedInterfaces = e.GetInterfaces().Any(f => f == typeof(ICarterModule));
+                // All exception handlers will be added in Program.cs
+                var isAllowedInterfaces = e.GetInterfaces().Any(f => f == typeof(ICarterModule) || f == typeof(IExceptionHandler));
                 return !isAllowedInterfaces;
             })
             .AsImplementedInterfaces();

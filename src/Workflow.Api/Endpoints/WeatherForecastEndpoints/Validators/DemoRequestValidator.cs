@@ -1,6 +1,6 @@
 using FluentValidation;
 using FluentValidation.Results;
-using Workflow.Domain.DataTransferObjects;
+using Workflow.Domain.RequestResponse.WeatherForecast;
 
 namespace Workflow.Api.Endpoints.WeatherForecastEndpoints.Validators;
 
