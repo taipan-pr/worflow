@@ -6,6 +6,7 @@ public interface IIdentityProvider
 {
     Task<Identity> RegisterAsync(CreateIdentity identity, CancellationToken cancellationToken = default);
     Task<Identity?> FindByIdAsync(string id, CancellationToken cancellationToken = default);
+    Task DeleteAsync(string id, CancellationToken cancellationToken);
     Task<Identity> SetEmailConfirmedAsync(string id, bool isConfirmed, CancellationToken cancellationToken = default);
     Task<Identity> SetDisabledAsync(string id, bool isDisabled, CancellationToken cancellationToken = default);
 }

@@ -24,6 +24,7 @@ builder.Services
 
 // Setup global exception handler
 builder.Services.AddExceptionHandler<ValidationExceptionHandler>();
+builder.Services.AddExceptionHandler<UserNotFoundExceptionHandler>();
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 builder.Services.AddExceptionHandler<UnhandledExceptionHandler>();
 
@@ -39,9 +40,7 @@ app.UseMiddleware<TimerMiddleware>();
 
 app.UseMiddleware<LoggerMiddleware>();
 
-#if !DEBUG
 app.UseExceptionHandler(_ => { });
-#endif
 
 app.UseHttpsRedirection();
 
