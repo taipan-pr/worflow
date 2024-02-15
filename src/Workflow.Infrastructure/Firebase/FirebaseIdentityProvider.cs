@@ -57,6 +57,18 @@ internal class FirebaseIdentityProvider : IIdentityProvider
         return result;
     }
 
+    public async Task DeleteAsync(string id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await _firebase.DeleteUserAsync(id, cancellationToken);
+        }
+        catch (FirebaseAuthException e)
+        {
+            ThrowCustomException(e);
+        }
+    }
+
     public async Task<Identity> SetEmailConfirmedAsync(string id, bool isConfirmed, CancellationToken cancellationToken = default)
     {
         var args = new UserRecordArgs
@@ -87,10 +99,13 @@ internal class FirebaseIdentityProvider : IIdentityProvider
     {
         switch (ex.AuthErrorCode)
         {
-            case AuthErrorCode.CertificateFetchFailed:
-                break;
             case AuthErrorCode.EmailAlreadyExists:
                 throw new UserExistsException();
+            case AuthErrorCode.UserNotFound:
+                throw new UserNotFoundException();
+
+            case AuthErrorCode.CertificateFetchFailed:
+                break;
             case AuthErrorCode.ExpiredIdToken:
                 break;
             case AuthErrorCode.InvalidIdToken:
@@ -121,7 +136,6 @@ internal class FirebaseIdentityProvider : IIdentityProvider
                 break;
 
             // Do nothing about these exceptions
-            case AuthErrorCode.UserNotFound:
             case null:
             default:
                 break;
